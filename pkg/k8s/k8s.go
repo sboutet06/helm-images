@@ -85,6 +85,11 @@ func (name *Name) Get(dataMap string) (string, error) {
 	}
 
 	if len(kindYaml) != 0 {
+		metadata, metadataExists := kindYaml["metadata"].(map[string]interface{})
+		if !metadataExists {
+			return "", &ImageError{Message: "failed to get 'metadata' from the manifest"}
+		}
+
 		value, failedManifest := kindYaml["metadata"].(map[string]interface{})["name"].(string)
 		if !failedManifest {
 			return "", &imgErrors.ImageError{Message: "failed to get name from the manifest, 'name' is not type string"}
